@@ -1,5 +1,5 @@
 // routes/ejemplo.routes.js
-const express = require('express');
+const express = require('express'); //en esta linea importo el paquete express
 const router = express.Router();
 
 const {
@@ -10,19 +10,21 @@ const {
   eliminarEjemplo,
 } = require('../controllers/ejemplo.controller');
 
-// Ruta para obtener todos los ejemplos
-router.get('/', obtenerEjemplos);
+const verificarToken = require('../middleware/auth');
 
-// Ruta para obtener un ejemplo por id
-router.get('/:id', obtenerEjemploPorId);
+// Esta linea la utilizo para obtener todos los ejemplos (PROTEGIDA)
+router.get('/', verificarToken, obtenerEjemplos);
 
-// Ruta para crear un nuevo ejemplo
-router.post('/', crearEjemplo);
+// Esta linea la utilizo para obtener un ejemplo por id (PROTEGIDA)
+router.get('/:id', verificarToken, obtenerEjemploPorId);
 
-// Ruta para actualizar un ejemplo existente
-router.put('/:id', actualizarEjemplo);
+// Esta linea la utilizo para crear un nuevo ejemplo
+router.post('/', verificarToken, crearEjemplo);
 
-// Ruta para eliminar un ejemplo
-router.delete('/:id', eliminarEjemplo);
+// Esta linea la utilizo para actualizar un ejemplo
+router.put('/:id', verificarToken, actualizarEjemplo);
+
+// Esta linea la utilizo para eliminar un ejemplo
+router.delete('/:id', verificarToken, eliminarEjemplo);
 
 module.exports = router;

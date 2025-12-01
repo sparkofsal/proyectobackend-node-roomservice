@@ -1,17 +1,17 @@
 // controllers/ejemplo.controller.js
 
-// Simularemos una "base de datos" en memoria por ahora
+// Esto me sirve para simular una base de datos en memoria con ejemplos
 let ejemplos = [
   { id: 1, nombre: "Ejemplo 1", descripcion: "Primer elemento de prueba" },
   { id: 2, nombre: "Ejemplo 2", descripcion: "Segundo elemento de prueba" },
 ];
 
-// Obtener todos los ejemplos (GET /api/ejemplos)
+// Esta seccion me sirve para definir las funciones para obtener, crear, actualizar y eliminar ejemplos
 function obtenerEjemplos(req, res) {
   res.json(ejemplos);
 }
 
-// Obtener un ejemplo por id (GET /api/ejemplos/:id)
+// Esta parte me sirve para obtener un ejemplo por su ID (GET /api/ejemplos/:id)
 function obtenerEjemploPorId(req, res) {
   const id = parseInt(req.params.id);
   const ejemplo = ejemplos.find((e) => e.id === id);
@@ -23,7 +23,7 @@ function obtenerEjemploPorId(req, res) {
   res.json(ejemplo);
 }
 
-// Crear un nuevo ejemplo (POST /api/ejemplos)
+// Esta parte me sirve para crear un nuevo ejemplo mediante POST /api/ejemplos
 function crearEjemplo(req, res) {
   const { nombre, descripcion } = req.body;
 
@@ -43,7 +43,7 @@ function crearEjemplo(req, res) {
   res.status(201).json(nuevoEjemplo);
 }
 
-// Actualizar un ejemplo (PUT /api/ejemplos/:id)
+// En esta parte me sirve para actualizar un ejemplo mediante PUT /api/ejemplos/:id; incluyendo un mensaje de error si no se encuentra
 function actualizarEjemplo(req, res) {
   const id = parseInt(req.params.id);
   const { nombre, descripcion } = req.body;
