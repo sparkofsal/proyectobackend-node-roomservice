@@ -5,3 +5,4 @@ setTimeout(() => {
 }, 2000);
 
 console.log("2. Fin inmediato");
+c
