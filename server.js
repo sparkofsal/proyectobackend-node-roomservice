@@ -11,22 +11,52 @@ const authRoutes = require('./routes/auth.routes');
 const userRoutes = require('./routes/user.routes'); // AGREGUE ESTA
 const adminRoutes = require('./routes/admin.routes'); // Y ESTA TAMBIEN PARA MAS SEGURIDAD
 
-// RUTA BASE PARA CONFIRMAR QUE EL SERVIDOR ESTA VIVO
+// CACHE SIMPLE EN MEMORIA
+let cache = {
+  value: null,
+  timestamp: null
+};
+const CACHE_TIME_MS = 10000; // 10 segundos
+
+// RUTA BASE
 app.get('/', (req, res) => {
   res.send('El servidor funciona correctamente');
 });
 
-// RUTA DE SALUD PARA CONFIRMAR CONEXION A MYSQL (XAMPP)
+// RUTA DE SALUD PARA MYSQL
 app.get('/health/db', async (req, res) => {
+  console.log('Entrando a /health/db');
+
   try {
     await pool.query('SELECT 1');
     res.json({ db: 'ok' });
   } catch (error) {
-    res.status(500).json({
-      db: 'fail',
-      error: error.message
+    res.status(500).json({ db: 'fail', error: error.message });
+  }
+});
+
+// RUTA DE EJEMPLO CON CACHE
+app.get('/api/cache/now', (req, res) => {
+  const now = Date.now();
+
+  if (cache.value && now - cache.timestamp < CACHE_TIME_MS) {
+    console.log('Respondiendo desde CACHE');
+    return res.json({
+      source: 'cache',
+      data: cache.value
     });
   }
+
+  console.log('Generando respuesta NUEVA');
+  const data = { time: new Date().toISOString() };
+
+  cache.value = data;
+  cache.timestamp = now;
+
+  res.json({
+    source: 'new',
+    data
+  });
 });
 
 // RUTAS DE LA APLICACION
