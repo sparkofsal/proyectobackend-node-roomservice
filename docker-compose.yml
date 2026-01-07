@@ -1,0 +1,44 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: backendnode_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: appdb
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppass
+    ports:
+      - "3307:3306" # tu PC:3307 -> contenedor:3306
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-prootpass"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    container_name: backendnode_api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+
+      # IMPORTANTE: dentro de docker el host NO es localhost, es el nombre del servicio: db
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: appuser
+      DB_PASSWORD: apppass
+      DB_NAME: appdb
+
+      JWT_SECRET: "change-this-in-prod"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
